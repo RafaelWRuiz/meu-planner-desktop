@@ -1,49 +1,30 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Planner Nuvem</title>
-    <style>
-        body {
-            margin: 0; padding: 40px; font-family: 'Segoe UI', sans-serif;
-            background: transparent; color: white; display: flex;
-            justify-content: center; gap: 15px; height: 100vh; overflow: hidden;
-        }
-        .column {
-            width: 210px; background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px); border-radius: 12px;
-            padding: 15px; border: 1px solid rgba(255,255,255,0.1);
-            height: fit-content; min-height: 450px;
-        }
-        .header { border-bottom: 2px solid #ffd700; margin-bottom: 15px; text-align: center; padding-bottom: 8px; }
-        .header h2 { margin: 0; font-size: 1rem; color: #ffd700; text-transform: uppercase; }
-        .event-box {
-            background: rgba(255,255,255,0.07); padding: 10px;
-            border-radius: 6px; margin-top: 8px; border-left: 3px solid #ffd700;
-            font-size: 0.85rem;
-        }
-        .time { color: #ffd700; font-weight: bold; font-size: 0.75rem; display: block; }
-        #loader { position: fixed; top: 10px; right: 10px; font-size: 10px; opacity: 0.5; }
-    </style>
-</head>
-<body>
-    <div id="loader">Sincronizando...</div>
-    <div id="planner"></div>
-
-    <script>
+<script>
         const ICS_URL = "https://outlook.live.com/owa/calendar/138c7a3c-953b-481d-ba4e-d23089a28169/1a8f188a-a392-4f70-9058-636fdf58efb3/cid-AABD2FC4AE1F391F/calendar.ics";
         
-        // Usamos um Proxy para evitar o erro de segurança (CORS)
-        const PROXY = "https://api.allorigins.win/raw?url=";
+        // NOVO PROXY: Mais estável e funciona melhor na Vercel
+        const PROXY = "https://corsproxy.io/?";
 
         async function fetchCalendar() {
+            const loader = document.getElementById('loader');
             try {
+                // Montamos a URL passando pelo proxy
                 const response = await fetch(PROXY + encodeURIComponent(ICS_URL));
+                
+                if (!response.ok) throw new Error("Erro na rede");
+                
                 const data = await response.text();
-                render(data);
-                document.getElementById('loader').innerText = "Atualizado: " + new Date().toLocaleTimeString();
+                
+                if (data.includes("BEGIN:VCALENDAR")) {
+                    render(data);
+                    loader.innerText = "Sincronizado: " + new Date().toLocaleTimeString();
+                    loader.style.color = "#00ff00";
+                } else {
+                    loader.innerText = "Dados inválidos recebidos";
+                }
             } catch (e) {
-                document.getElementById('loader').innerText = "Erro na conexão";
+                console.error("Erro:", e);
+                loader.innerText = "Erro ao conectar. Tentando novamente...";
+                loader.style.color = "#ff4444";
             }
         }
 
@@ -67,18 +48,17 @@
                 const match = ev.match(/:(\d{8})T(\d{4})/);
                 if (title && match) {
                     const d = match[1];
-                    const h = match[2].slice(0,2);
+                    let h = parseInt(match[2].slice(0,2));
                     const m = match[2].slice(2,4);
+                    
                     const target = document.getElementById(`events-${d}`);
                     if (target) {
-                        target.innerHTML += `<div class="event-box"><span class="time">${h}:${m}</span>${title}</div>`;
+                        target.innerHTML += `<div class="event-box"><span class="time">${h.toString().padStart(2,'0')}:${m}</span>${title}</div>`;
                     }
                 }
             });
         }
 
         fetchCalendar();
-        setInterval(fetchCalendar, 600000); // Atualiza a cada 10 min
+        setInterval(fetchCalendar, 300000); // Atualiza a cada 5 minutos
     </script>
-</body>
-</html>
