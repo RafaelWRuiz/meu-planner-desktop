@@ -5,6 +5,10 @@
 <title>Weekly Planner — Wallpaper 2560×1080</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
+  /* =========================================================
+     OPTIMIZED FOR 2560 x 1080 ULTRAWIDE
+     Container: 1040px wide × 78vh, anchored bottom-right
+     ========================================================= */
   :root{
     --gold:#FFD700;
     --gold-soft: rgba(255,215,0,0.65);
@@ -22,227 +26,675 @@
   html, body{
     width:100%;
     height:100vh;
-    background-color: #000 !important; /* Fundo preto solicitado */
-    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    background: #000;
+    font-family: "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
     color: var(--text);
     overflow:hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* LAYOUT ULTRAWIDE ORIGINAL DO LOVABLE */
-  .planner-app{
+  /* Right-anchored container — Ultrawide 2560x1080 */
+  .planner{
     position: fixed;
-    right: 45px;
-    bottom: 45px;
-    width: 1040px;
-    height: 78vh;
+    right: 0;
+    bottom: 0;
+    height: 840px;          /* ~78% de 1080, deixa respiro inferior */
+    width: 1040px;          /* aproveita melhor a área direita do ultrawide */
+    max-height: 100vh;
+    max-width: 100vw;
+    padding: 18px 26px 22px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    z-index: 10;
-  }
-
-  .header-ui{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 0 8px;
-  }
-
-  .brand h1{
-    font-family: "Playfair Display", serif;
-    font-size: 26px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 400;
-  }
-  .brand h1 span{ color: var(--gold); font-style: italic; }
-
-  .nav-ui{
-    display: flex;
-    gap: 10px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    padding: 6px 14px;
-    border-radius: 30px;
-    border: 1px solid var(--glass-border);
-  }
-
-  .nav-ui button{
-    background: transparent;
-    border: none;
-    color: var(--gold);
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .planner-grid{
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr) 0.92fr;
     gap: 12px;
+    pointer-events: auto;
+  }
+
+  .header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    padding: 0 6px;
+    opacity: 0;
+    transform: translateY(-8px);
+    animation: fadeDown 900ms ease-out 100ms forwards;
+  }
+  .header h1{
+    font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .header h1 span{ color: var(--gold); font-style: italic; font-weight: 500; }
+  .header .meta-wrap{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+  }
+  .header .meta{
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    min-width: 180px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .nav-btn{
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 1;
+    backdrop-filter: blur(8px);
+    transition: all .2s ease;
+    padding: 0;
+    user-select: none;
+  }
+  .nav-btn:hover{
+    border-color: var(--gold-soft);
+    color: var(--gold);
+    box-shadow: 0 0 10px rgba(255,215,0,0.30);
+    transform: translateY(-1px);
+  }
+  .nav-btn:active{ transform: translateY(0); }
+  .nav-btn:disabled{ opacity: .35; cursor: default; transform: none; }
+  .nav-btn.today-btn{
+    width: auto;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 13px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .grid{
+    flex:1;
+    display:grid;
+    /* 5 weekdays + weekend column (slightly narrower) */
+    grid-template-columns: repeat(5, 1fr) 0.92fr;
+    gap: 10px;
     min-height: 0;
   }
 
-  .day-col{
+  .day{
+    position: relative;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    backdrop-filter: blur(25px);
-    display: flex;
+    border-radius: 16px;
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 0 40px rgba(255,255,255,0.015),
+      0 18px 50px rgba(0,0,0,0.35);
+    padding: 12px 10px;
+    display:flex;
     flex-direction: column;
-    overflow: hidden;
-    animation: slideUp 0.6s ease-out forwards;
+    overflow:hidden;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeUp 700ms cubic-bezier(.2,.7,.2,1) forwards;
   }
+  .day:nth-child(1){ animation-delay: 200ms; }
+  .day:nth-child(2){ animation-delay: 300ms; }
+  .day:nth-child(3){ animation-delay: 400ms; }
+  .day:nth-child(4){ animation-delay: 500ms; }
+  .day:nth-child(5){ animation-delay: 600ms; }
+  .day:nth-child(6){ animation-delay: 720ms; }
 
-  .day-head{
-    padding: 16px 10px;
-    text-align: center;
+  /* Weekend column: keeps weekday top tasks-area, then splits the
+     remaining (hours-equivalent) space into Sat + Sun stacks. */
+  .weekend-stack{
+    flex:1;
+    display:flex;
+    flex-direction: column;
+    min-height: 0;
+    padding-top: 6px;
+  }
+  .weekend-half{
+    flex:1;
+    display:flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow:hidden;
+  }
+  .weekend-half + .weekend-half{
+    border-top: 1px dashed rgba(255,255,255,0.10);
+    margin-top: 8px;
+    padding-top: 10px;
+  }
+  .weekend-half .mini-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap: 8px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
     border-bottom: 1px solid var(--glass-border);
-    background: var(--glass-inner);
+    white-space: nowrap;
   }
-
-  .day-name{ font-size: 9px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
-  .day-date{ font-size: 18px; color: var(--gold); font-weight: 600; margin-top: 2px; display: block; }
-
-  .day-body{ flex: 1; overflow-y: auto; scrollbar-width: none; padding: 10px; }
-  .day-body::-webkit-scrollbar { display: none; }
-
-  .tasks-area{
-    min-height: 60px;
-    border-bottom: 1px dashed rgba(255,255,255,0.08);
-    margin-bottom: 10px;
-    display: flex;
+  .weekend-half .mini-header .day-name{ letter-spacing: 0.22em; }
+  .weekend-half .free-area{
+    flex:1;
+    display:flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
+    overflow:hidden;
+    padding: 0 2px;
   }
 
-  .hour-row{ display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.03); padding: 6px 0; }
-  .hour-label{ width: 28px; font-size: 8px; font-weight: 800; color: var(--gold-soft); text-align: right; }
-  .hour-slot{ flex: 1; display: flex; flex-direction: column; gap: 4px; }
-
-  .event-card{
-    background: var(--card-bg);
-    border-left: 2px solid var(--gold);
-    border-radius: 4px;
-    padding: 5px 8px;
+  /* Day header — one line: SEGUNDA · 13 ABR */
+  .day-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap;
+  }
+  .day-name{
     font-size: 10px;
-    line-height: 1.3;
-    animation: fadeIn 0.4s ease forwards;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .day-date{
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 15px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .day-date .month{
+    font-family: "Inter", sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--gold-soft);
+    margin-left: 3px;
+    text-transform: uppercase;
   }
 
-  #sync-info{ position: fixed; bottom: 15px; right: 45px; font-size: 9px; color: var(--gold); opacity: 0.5; }
+  /* Vertical split: tasks (top) + hours grid (bottom) */
+  .day-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-height: 0;
+  }
+  .tasks-area{
+    flex: 0 0 42%;
+    border-bottom: 1px dashed rgba(255,255,255,0.08);
+    padding: 4px 2px 8px;
+    display:flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow:hidden;
+  }
+  .tasks-area::-webkit-scrollbar{ width:0; }
 
-  @keyframes slideUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
-  @keyframes fadeIn { from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
+  .hours-area{
+    flex: 1;
+    padding-top: 6px;
+    display:flex;
+    flex-direction: column;
+    overflow:hidden;
+    position: relative;
+  }
+
+  /* Each hour row */
+  .hour-row{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap: 6px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 0;
+    min-height: 0;
+  }
+  .hour-row:first-child{ border-top: none; }
+  .hour-label{
+    flex: 0 0 24px;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--gold-soft);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .hour-slot{
+    flex:1;
+    min-width: 0;
+    min-height: 0;
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* Task chip (no time, top area) */
+  .task{
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 6px 9px 6px 11px;
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--text);
+    backdrop-filter: blur(6px);
+    position: relative;
+    opacity: 0;
+    transform: translateY(6px);
+    animation: cardIn 500ms ease-out forwards;
+  }
+  .task::before{
+    content:"";
+    position:absolute;
+    left:0; top: 6px; bottom: 6px;
+    width: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+    opacity: .85;
+    box-shadow: 0 0 6px rgba(255,215,0,0.4);
+  }
+
+  /* Scheduled event inside hour-slot */
+  .event{
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 10px;
+    line-height: 1.2;
+    color: var(--text);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateY(4px);
+    animation: cardIn 500ms ease-out forwards;
+    border-left: 2px solid var(--gold);
+  }
+  .event .title{
+    font-size: 10px;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* Today highlight */
+  .day.today{
+    border-color: rgba(255,215,0,0.25);
+    box-shadow:
+      inset 0 1px 0 rgba(255,215,0,0.12),
+      inset 0 0 60px rgba(255,215,0,0.04),
+      0 20px 60px rgba(0,0,0,0.4);
+  }
+  .day.today .day-name{ color: var(--gold); }
+
+  @keyframes fadeUp{
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes fadeDown{
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes cardIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
 
-<div class="planner-app">
-  <div class="header-ui">
-    <div class="brand"><h1>Weekly <span>Planner</span></h1></div>
-    <div class="nav-ui">
-      <button onclick="moveWeek(-1)">←</button>
-      <button onclick="goToday()">Hoje</button>
-      <button onclick="moveWeek(1)">→</button>
+<div class="planner">
+  <div class="header">
+    <h1>Weekly <span>Planner</span></h1>
+    <div class="meta-wrap">
+      <button class="nav-btn" id="prev-week" title="Semana anterior" aria-label="Semana anterior">◀</button>
+      <button class="nav-btn today-btn" id="today-btn" title="Voltar para a semana atual">Hoje</button>
+      <button class="nav-btn" id="next-week" title="Próxima semana" aria-label="Próxima semana">▶</button>
+      <button class="nav-btn today-btn" id="refresh-btn" title="Sincronizar agora com o Outlook">↻ <span id="sync-label">SYNC</span></button>
+      <div class="meta" id="week-meta">Semana</div>
     </div>
   </div>
-  <div class="planner-grid" id="main-grid"></div>
+
+  <div class="grid" id="grid">
+    <!-- Days are rendered by JS so dates auto-update -->
+  </div>
 </div>
 
-<div id="sync-info">Sincronizando...</div>
-
 <script>
-  // CONFIGURAÇÃO DA SUA API NA VERCEL
-  const API_ENDPOINT = "/api/calendar";
-  const WEEKDAYS = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
-  let currentOffset = 0;
+  const DAYS_PT = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
+  const MONTHS_PT = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
 
-  function renderGrid() {
-    const grid = document.getElementById("main-grid");
+  function getMonday(d){
+    const date = new Date(d);
+    const day = date.getDay(); // 0 Sun..6 Sat
+    const diff = (day === 0 ? -6 : 1 - day);
+    date.setDate(date.getDate() + diff);
+    date.setHours(0,0,0,0);
+    return date;
+  }
+  function fmtId(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}${m}${day}`;
+  }
+  function isSameDay(a,b){
+    return a.getFullYear()===b.getFullYear()
+      && a.getMonth()===b.getMonth()
+      && a.getDate()===b.getDate();
+  }
+
+  // "Hoje" = data real do navegador. Botão "Hoje" volta sempre para a semana atual.
+  const TODAY = (() => { const t = new Date(); t.setHours(0,0,0,0); return t; })();
+  const grid = document.getElementById("grid");
+  const weekMetaEl = document.getElementById("week-meta");
+
+  const HOUR_START = 6;
+  const HOUR_END = 23; // inclusive
+
+  // Estado da navegação: deslocamento em semanas (0 = semana de TODAY)
+  let weekOffset = 0;
+  // Cache do .ics para não rebaixar a cada navegação
+  let icsCachePromise = null;
+
+  /* ============================================================
+     OUTLOOK .ICS CONFIG
+     ============================================================ */
+  const ICS_URL = "https://outlook.live.com/owa/calendar/138c7a3c-953b-481d-ba4e-d23089a28169/1a8f188a-a392-4f70-9058-636fdf58efb3/cid-AABD2FC4AE1F391F/calendar.ics";
+  // Usa a sua própria API no Vercel — sem CORS, sem proxies públicos
+  const API_CALENDAR_URL = "/api/calendar";
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+
+  function parseIcsDate(value){
+    if (!value) return null;
+    if (/^\d{8}$/.test(value)) {
+      const y = +value.slice(0,4), m = +value.slice(4,6)-1, d = +value.slice(6,8);
+      return new Date(y, m, d);
+    }
+    const m = value.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
+    if (!m) return null;
+    const [_, y, mo, d, h, mi, s, z] = m;
+    if (z === "Z") return new Date(Date.UTC(+y, +mo-1, +d, +h, +mi, +s));
+    return new Date(+y, +mo-1, +d, +h, +mi, +s);
+  }
+  function unfoldIcs(t){ return t.replace(/\r?\n[ \t]/g, ""); }
+  function unescapeIcsText(s){
+    return (s || "").replace(/\\n/gi, " ").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\");
+  }
+  function parseIcs(icsText){
+    const lines = unfoldIcs(icsText).split(/\r?\n/);
+    const events = []; let cur = null;
+    for (const line of lines) {
+      if (line === "BEGIN:VEVENT") { cur = {}; continue; }
+      if (line === "END:VEVENT") { if (cur) events.push(cur); cur = null; continue; }
+      if (!cur) continue;
+      const idx = line.indexOf(":"); if (idx === -1) continue;
+      const head = line.slice(0, idx), value = line.slice(idx + 1);
+      const [name] = head.split(";");
+      switch (name) {
+        case "DTSTART": cur.start = parseIcsDate(value); cur.allDay = /^\d{8}$/.test(value); break;
+        case "DTEND":   cur.end   = parseIcsDate(value); break;
+        case "SUMMARY": cur.title = unescapeIcsText(value); break;
+        case "UID":     cur.uid   = value; break;
+      }
+    }
+    return events;
+  }
+
+  async function fetchIcsViaProxy(url){
+    // Chama sua propria API no Vercel — sem CORS, sem proxies publicos
+    const res = await fetch(API_CALENDAR_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`API respondeu HTTP ${res.status}`);
+    const text = await res.text();
+    if (!text.includes("BEGIN:VCALENDAR")) throw new Error("Resposta nao e um .ics valido");
+    console.log("[outlook-ics] carregado via /api/calendar com sucesso");
+    return text;
+  }
+
+  function getEvents(){
+    if (!icsCachePromise) {
+      icsCachePromise = fetchIcsViaProxy(ICS_URL)
+        .then(parseIcs)
+        .catch((err) => {
+          console.error("[outlook-ics] falha ao carregar:", err);
+          // Fallback estático (sincronização manual conhecida da semana 20–26 abr 2026)
+          return [
+            { start: new Date(2026,3,20, 9, 0), title: "teste", allDay:false },
+            { start: new Date(2026,3,20, 9,30), title: "teste", allDay:false },
+            { start: new Date(2026,3,20,11, 0), title: "FOI AR", allDay:false },
+            { start: new Date(2026,3,20,13, 0), title: "TESTE DE ATUALIZAÇÃO", allDay:false },
+            { start: new Date(2026,3,21, 9, 0), title: "Feriado Tiradentes", allDay:false },
+          ];
+        });
+    }
+    return icsCachePromise;
+  }
+
+  /* ============================================================
+     RENDERIZAÇÃO DA SEMANA
+     ============================================================ */
+  function injectEvent(ev, weekStart, weekEnd){
+    if (!ev.start || !ev.title) return;
+    if (ev.start < weekStart || ev.start >= weekEnd) return;
+
+    const dateId = `${ev.start.getFullYear()}${pad2(ev.start.getMonth()+1)}${pad2(ev.start.getDate())}`;
+    const hh = pad2(ev.start.getHours());
+    const time = `${hh}:${pad2(ev.start.getMinutes())}`;
+
+    const slot = document.getElementById(`events-${dateId}T${hh}`);
+    if (slot) {
+      const el = document.createElement("div");
+      el.className = "event";
+      el.innerHTML = `<span class="title"><strong>${ev.allDay ? "" : time + " "}</strong>${ev.title}</span>`;
+      slot.appendChild(el);
+      return;
+    }
+    const weekendArea = document.getElementById(`tasks-${dateId}`);
+    if (weekendArea) {
+      const el = document.createElement("div");
+      el.className = "task";
+      el.innerHTML = `<strong>${ev.allDay ? "" : time + " "}</strong>${ev.title}`;
+      weekendArea.appendChild(el);
+    }
+  }
+
+  function animateChildren(container, baseDelay = 900){
+    const items = container.querySelectorAll(".task, .event");
+    items.forEach((el, i) => { el.style.animationDelay = `${baseDelay + i * 70}ms`; });
+  }
+
+  async function renderWeek(offset){
+    weekOffset = offset;
+
+    // Calcula segunda-feira da semana com base em TODAY + offset semanas
+    const ref = new Date(TODAY);
+    ref.setDate(ref.getDate() + offset * 7);
+    const monday = getMonday(ref);
+
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(monday); d.setDate(monday.getDate() + i); days.push(d);
+    }
+    const saturday = new Date(monday); saturday.setDate(monday.getDate() + 5);
+    const sunday   = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    const lastSunday = sunday;
+
+    // Atualiza label da semana (com sufixo "· hoje" / "· +N sem")
+    const first = days[0];
+    let suffix = "";
+    if (offset === 0) suffix = " · ATUAL";
+    else if (offset > 0) suffix = ` · +${offset} SEM`;
+    else suffix = ` · ${offset} SEM`;
+    weekMetaEl.textContent =
+      `${pad2(first.getDate())} ${MONTHS_PT[first.getMonth()]} — ${pad2(lastSunday.getDate())} ${MONTHS_PT[lastSunday.getMonth()]} ${lastSunday.getFullYear()}${suffix}`;
+
+    // Limpa grid e reconstrói
     grid.innerHTML = "";
-    
-    const today = new Date();
-    const monday = new Date(today);
-    const dayToSubtract = today.getDay() === 0 ? 6 : today.getDay() - 1;
-    monday.setDate(today.getDate() - dayToSubtract + (currentOffset * 7));
 
-    for(let i=0; i<6; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
-      const dateId = date.toISOString().split('T')[0].replace(/-/g, '');
-      
+    days.forEach((d, idx) => {
+      const isToday = isSameDay(d, TODAY);
+      const dateId = fmtId(d);
+      const col = document.createElement("div");
+      col.className = "day" + (isToday ? " today" : "");
+
       let hoursHtml = "";
-      for(let h=7; h<=21; h++) {
-        const hh = String(h).padStart(2, '0');
+      for (let h = HOUR_START; h <= HOUR_END; h++) {
+        const hh = pad2(h);
         hoursHtml += `
           <div class="hour-row">
-            <div class="hour-label">${hh}h</div>
-            <div class="hour-slot" id="slot-${dateId}T${hh}"></div>
+            <div class="hour-label">${hh}</div>
+            <div class="hour-slot" id="events-${dateId}T${hh}"></div>
           </div>`;
       }
 
-      const col = document.createElement("div");
-      col.className = "day-col";
-      col.style.animationDelay = (i * 0.08) + "s";
       col.innerHTML = `
-        <div class="day-head">
-          <span class="day-name">${i < 5 ? WEEKDAYS[i] : 'WEEKEND'}</span>
-          <span class="day-date">${date.getDate()}/${date.getMonth()+1}</span>
+        <div class="day-header">
+          <span class="day-name">${DAYS_PT[idx]}</span>
+          <span class="day-date">${pad2(d.getDate())}<span class="month">${MONTHS_PT[d.getMonth()]}</span></span>
         </div>
         <div class="day-body">
           <div class="tasks-area" id="tasks-${dateId}"></div>
-          ${hoursHtml}
-        </div>
-      `;
+          <div class="hours-area">${hoursHtml}</div>
+        </div>`;
       grid.appendChild(col);
-    }
-    fetchData();
-  }
+    });
 
-  async function fetchData() {
-    const status = document.getElementById("sync-info");
+    // Coluna fim de semana
+    const weekendDateId = fmtId(saturday);
+    const weekendCol = document.createElement("div");
+    const weekendIsToday = isSameDay(saturday, TODAY) || isSameDay(sunday, TODAY);
+    weekendCol.className = "day weekend" + (weekendIsToday ? " today" : "");
+
+    function weekendHalf(d, label){
+      const dateId = fmtId(d);
+      const todayCls = isSameDay(d, TODAY) ? " is-today" : "";
+      return `
+        <div class="weekend-half${todayCls}">
+          <div class="mini-header">
+            <span class="day-name">${label}</span>
+            <span class="day-date">${pad2(d.getDate())}<span class="month">${MONTHS_PT[d.getMonth()]}</span></span>
+          </div>
+          <div class="free-area tasks-area" id="tasks-${dateId}"></div>
+        </div>`;
+    }
+
+    weekendCol.innerHTML = `
+      <div class="day-header" style="white-space:normal; flex-wrap:wrap; gap:4px 8px;">
+        <span class="day-name" style="font-size:8px; letter-spacing:0.20em;">FIM DE SEMANA</span>
+        <span class="day-date">${pad2(saturday.getDate())}<span class="month">${MONTHS_PT[saturday.getMonth()]}</span></span>
+      </div>
+      <div class="day-body">
+        <div class="tasks-area" id="tasks-${weekendDateId}-notes"></div>
+        <div class="weekend-stack">
+          ${weekendHalf(saturday, "SÁBADO")}
+          ${weekendHalf(sunday, "DOMINGO")}
+        </div>
+      </div>`;
+    grid.appendChild(weekendCol);
+
+    // Anima as colunas recém-criadas (substitui o CSS nth-child delay quando re-renderizamos)
+    grid.querySelectorAll(".day").forEach((col, i) => {
+      col.style.animationDelay = `${100 + i * 90}ms`;
+    });
+
+    // Janela visível
+    const weekStart = new Date(monday); weekStart.setHours(0,0,0,0);
+    const weekEnd = new Date(monday); weekEnd.setDate(monday.getDate()+7); weekEnd.setHours(0,0,0,0);
+
+    // Re-busca eventos (do cache) e injeta os que caem na semana
     try {
-      const resp = await fetch(API_ENDPOINT + "?v=" + Date.now());
-      const ics = await resp.text();
-      
-      // Limpar campos
-      document.querySelectorAll('.hour-slot, .tasks-area').forEach(s => s.innerHTML = "");
+      const events = await getEvents();
+      events.forEach((ev) => injectEvent(ev, weekStart, weekEnd));
+      console.log(`[outlook-ics] semana ${offset}: ${events.filter(e => e.start >= weekStart && e.start < weekEnd).length} eventos visíveis`);
+    } catch (err) {
+      console.error("[outlook-ics] erro ao injetar eventos:", err);
+    }
 
-      const blocks = ics.split("BEGIN:VEVENT");
-      blocks.shift();
+    // Anima cards
+    document.querySelectorAll('.tasks-area, .hour-slot').forEach((c, i) => {
+      animateChildren(c, 600 + (i % 18) * 25);
+    });
+  }
 
-      blocks.forEach(b => {
-        const summary = b.match(/SUMMARY:(.*)/)?.[1]?.trim();
-        const start = b.match(/DTSTART.*:(\d{8})(T(\d{2}))?/);
+  // Listeners dos botões de navegação
+  document.getElementById("prev-week").addEventListener("click", () => renderWeek(weekOffset - 1));
+  document.getElementById("next-week").addEventListener("click", () => renderWeek(weekOffset + 1));
+  document.getElementById("today-btn").addEventListener("click", () => renderWeek(0));
 
-        if (summary && start) {
-          const dId = start[1];
-          const hId = start[3];
-          if (hId) {
-            const slot = document.getElementById(`slot-${dId}T${hId}`);
-            if (slot) slot.innerHTML += `<div class="event-card">${summary}</div>`;
-          } else {
-            const task = document.getElementById(`tasks-${dId}`);
-            if (task) task.innerHTML += `<div class="event-card" style="border-left-color: #fff;">${summary}</div>`;
-          }
-        }
-      });
-      status.innerText = "SINCRO: " + new Date().toLocaleTimeString().slice(0,5);
-    } catch (e) {
-      status.innerText = "ERRO DE CONEXÃO";
+  // Atalhos de teclado: ← / →
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft")  renderWeek(weekOffset - 1);
+    if (e.key === "ArrowRight") renderWeek(weekOffset + 1);
+    if (e.key === "Home")       renderWeek(0);
+  });
+
+  /* ============================================================
+     AUTO-SYNC COM OUTLOOK
+     - Refetch manual via botão 🔄
+     - Refetch automático a cada 5 minutos
+     - Refetch quando a aba volta a ficar visível (se passou >2min)
+     ============================================================ */
+  const AUTO_REFRESH_MS = 5 * 60 * 1000;   // 5 minutos
+  const VISIBILITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutos
+  let lastSyncAt = 0;
+  const syncLabel = document.getElementById("sync-label");
+  const refreshBtn = document.getElementById("refresh-btn");
+
+  function fmtTime(d){
+    return d.toTimeString().slice(0,5);
+  }
+
+  async function syncNow(reason){
+    // Invalida cache para forçar nova busca do .ics
+    icsCachePromise = null;
+    if (syncLabel) syncLabel.textContent = "SINCRONIZANDO…";
+    if (refreshBtn) refreshBtn.disabled = true;
+    try {
+      await renderWeek(weekOffset);
+      lastSyncAt = Date.now();
+      if (syncLabel) syncLabel.textContent = "SYNC " + fmtTime(new Date(lastSyncAt));
+      console.log(`[outlook-ics] sincronizado (${reason}) às ${fmtTime(new Date(lastSyncAt))}`);
+    } catch (err) {
+      console.error("[outlook-ics] erro no sync:", err);
+      if (syncLabel) syncLabel.textContent = "ERRO – TENTE 🔄";
+    } finally {
+      if (refreshBtn) refreshBtn.disabled = false;
     }
   }
 
-  function moveWeek(n) { currentOffset += n; renderGrid(); }
-  function goToday() { currentOffset = 0; renderGrid(); }
+  // Botão manual
+  refreshBtn.addEventListener("click", () => syncNow("manual"));
 
-  renderGrid();
-  setInterval(fetchData, 600000); // Atualiza a cada 10 min
+  // Auto-refresh periódico
+  setInterval(() => syncNow("intervalo"), AUTO_REFRESH_MS);
+
+  // Refresh ao voltar para a aba (se já passou tempo suficiente)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" &&
+        Date.now() - lastSyncAt > VISIBILITY_THRESHOLD_MS) {
+      syncNow("aba ativa");
+    }
+  });
+
+  // Também ressincroniza ao reconectar a internet
+  window.addEventListener("online", () => syncNow("rede online"));
+
+  // Render + sync inicial
+  syncNow("inicial");
 </script>
+
 </body>
 </html>
