@@ -22,112 +22,101 @@
   html, body{
     width:100%;
     height:100vh;
-    background: transparent; /* Alterado para transparência no Lively */
+    background: transparent !important; /* Importante para o Lively */
     font-family: "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
     color: var(--text);
     overflow:hidden;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Container principal empurrado para a DIREITA (Ultrawide) */
   .planner{
     position: fixed;
-    right: 0;
-    bottom: 0;
-    height: 72vh;
-    width: 880px;
-    padding: 14px 20px;
+    right: 40px;
+    bottom: 40px;
+    height: 85vh;
+    width: 1050px; /* Largura ideal para 5 dias + fim de semana */
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .header{
     display:flex;
     align-items:flex-end;
     justify-content:space-between;
-    padding: 0 6px;
-    opacity: 0;
-    transform: translateY(-8px);
-    animation: fadeDown 900ms ease-out 100ms forwards;
+    padding: 0 10px;
   }
   .header h1{
     font-family: Georgia, serif;
     font-weight: 400;
-    font-size: 20px;
-    letter-spacing: 0.18em;
+    font-size: 24px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--text);
   }
-  .header h1 span{ color: var(--gold); font-style: italic; font-weight: 500; }
-  .header .meta{
-    font-size: 9px;
-    letter-spacing: 0.32em;
+  .header h1 span{ color: var(--gold); font-style: italic; }
+
+  .nav-controls {
+    display: flex;
+    gap: 10px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+  }
+  .nav-controls button {
+    background: transparent;
+    border: none;
+    color: var(--gold);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-dim);
   }
 
   .grid{
     flex:1;
     display:grid;
-    grid-template-columns: repeat(5, 1fr) 0.92fr;
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr) 0.8fr; /* 5 dias + weekend */
+    gap: 12px;
     min-height: 0;
   }
 
   .day{
-    position: relative;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    backdrop-filter: blur(24px) saturate(140%);
-    -webkit-backdrop-filter: blur(24px) saturate(140%);
-    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
-    padding: 12px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(30px);
+    padding: 15px 12px;
     display:flex;
     flex-direction: column;
     overflow:hidden;
-    opacity: 0;
-    transform: translateY(14px);
-    animation: fadeUp 700ms cubic-bezier(.2,.7,.2,1) forwards;
   }
 
-  .day-header{
-    display:flex;
-    align-items:baseline;
-    justify-content:center;
-    gap: 8px;
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--glass-border);
-    white-space: nowrap;
-  }
-  .day-name{ font-size: 9px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--text); }
-  .day-date{ font-size: 13px; color: var(--gold); font-weight: 500; }
+  .day-header{ text-align: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 10px;}
+  .day-name{ font-size: 9px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim); }
+  .day-date{ font-size: 16px; color: var(--gold); font-weight: 600; margin-top: 4px; display: block; }
 
-  .day-body{ flex:1; display:flex; flex-direction:column; min-height: 0; }
-  .tasks-area{ flex: 0 0 30%; border-bottom: 1px dashed rgba(255,255,255,0.08); padding: 4px 2px; display:flex; flex-direction: column; gap: 4px; overflow-y: auto; scrollbar-width: none; }
-  .hours-area{ flex: 1; padding-top: 6px; display:flex; flex-direction: column; overflow-y: auto; scrollbar-width: none; position: relative; }
+  .tasks-area{ flex: 0 0 25%; border-bottom: 1px dashed rgba(255,255,255,0.1); overflow-y: auto; display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; scrollbar-width: none; }
+  .hours-area{ flex: 1; overflow-y: auto; scrollbar-width: none; }
+  
+  .hour-row{ display: flex; align-items: flex-start; min-height: 35px; border-top: 1px solid rgba(255,255,255,0.03); padding: 5px 0; }
+  .hour-label{ width: 30px; font-size: 8px; font-weight: bold; color: var(--gold-soft); }
+  .hour-slot{ flex: 1; display: flex; flex-direction: column; gap: 3px; }
 
-  .hour-row{ display:flex; align-items:flex-start; gap: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding: 4px 0; min-height: 25px; }
-  .hour-label{ flex: 0 0 20px; font-size: 8px; font-weight: 600; color: var(--gold-soft); }
-  .hour-slot{ flex:1; display:flex; flex-direction: column; gap: 2px; }
-
-  .event{
+  .event-card{
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 6px;
-    padding: 4px 6px;
-    font-size: 10px;
-    color: var(--text);
     border-left: 3px solid var(--gold);
-    animation: cardIn 500ms ease-out forwards;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 11px;
+    line-height: 1.3;
+    animation: fadeIn 0.4s ease forwards;
   }
 
-  .day.today{ border-color: rgba(255,215,0,0.4); }
-
-  @keyframes fadeUp{ to{ opacity:1; transform: translateY(0); } }
-  @keyframes fadeDown{ to{ opacity:1; transform: translateY(0); } }
-  @keyframes cardIn{ from{ opacity:0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0); } }
+  @keyframes fadeIn { from{opacity:0; transform: translateY(5px);} to{opacity:1; transform: translateY(0);} }
 </style>
 </head>
 <body>
@@ -135,97 +124,89 @@
 <div class="planner">
   <div class="header">
     <h1>Weekly <span>Planner</span></h1>
-    <div class="meta" id="week-meta">Carregando...</div>
+    <div class="nav-controls">
+      <button id="btn-prev">←</button>
+      <button id="btn-today">HOJE</button>
+      <button id="btn-next">→</button>
+    </div>
   </div>
-  <div class="grid" id="grid"></div>
+  <div class="grid" id="main-grid"></div>
 </div>
 
 <script>
   const ICS_URL = "https://outlook.live.com/owa/calendar/138c7a3c-953b-481d-ba4e-d23089a28169/1a8f188a-a392-4f70-9058-636fdf58efb3/cid-AABD2FC4AE1F391F/calendar.ics";
   const PROXY = "https://api.allorigins.win/raw?url=";
-  const DAYS_PT = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
-  const MONTHS_PT = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+  const DIAS_PT = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
+  let offsetSemanas = 0;
 
-  function getMonday(d){
-    const date = new Date(d);
-    const day = date.getDay();
-    const diff = (day === 0 ? -6 : 1 - day);
-    date.setDate(date.getDate() + diff);
-    return date;
-  }
-
-  function initGrid() {
-    const today = new Date();
-    const monday = getMonday(today);
-    const grid = document.getElementById("grid");
+  function criarLayout() {
+    const grid = document.getElementById("main-grid");
     grid.innerHTML = "";
+    
+    const hoje = new Date();
+    const segunda = new Date(hoje);
+    segunda.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1) + (offsetSemanas * 7));
 
-    for(let i=0; i<5; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const dateId = d.toISOString().split('T')[0].replace(/-/g, '');
-      const isToday = d.toDateString() === today.toDateString();
+    for(let i=0; i<6; i++) { // 5 dias + 1 coluna extra para weekend
+      const d = new Date(segunda);
+      d.setDate(segunda.getDate() + i);
+      const dataId = d.toISOString().split('T')[0].replace(/-/g, '');
       
       const col = document.createElement("div");
-      col.className = `day ${isToday ? 'today' : ''}`;
-      col.style.animationDelay = `${i * 100}ms`;
-
-      let hoursHtml = "";
-      for(let h = 6; h <= 22; h++) {
-        const hh = String(h).padStart(2, "0");
-        hoursHtml += `<div class="hour-row"><div class="hour-label">${hh}h</div><div class="hour-slot" id="events-${dateId}T${hh}"></div></div>`;
+      col.className = "day";
+      
+      let titulo = i < 5 ? DIAS_PT[i] : "FIM DE SEMANA";
+      
+      let htmlHoras = "";
+      for(let h=7; h<=22; h++) {
+        const hh = String(h).padStart(2, '0');
+        htmlHoras += `<div class="hour-row"><div class="hour-label">${hh}h</div><div class="hour-slot" id="slot-${dataId}T${hh}"></div></div>`;
       }
 
       col.innerHTML = `
         <div class="day-header">
-          <span class="day-name">${DAYS_PT[i]}</span>
-          <span class="day-date">${d.getDate()} ${MONTHS_PT[d.getMonth()]}</span>
+          <span class="day-name">${titulo}</span>
+          <span class="day-date">${d.getDate()}/${d.getMonth()+1}</span>
         </div>
-        <div class="day-body">
-          <div class="tasks-area" id="tasks-${dateId}"></div>
-          <div class="hours-area">${hoursHtml}</div>
-        </div>`;
+        <div class="tasks-area" id="tasks-${dataId}"></div>
+        <div class="hours-area">${htmlHoras}</div>
+      `;
       grid.appendChild(col);
     }
-    document.getElementById("week-meta").textContent = `Semana de ${monday.getDate()}/${monday.getMonth()+1}`;
+    carregarDados();
   }
 
-  async function fetchCalendar() {
+  async function carregarDados() {
     try {
-      const r = await fetch(PROXY + encodeURIComponent(ICS_URL + "?t=" + Date.now()));
-      const text = await r.text();
-      parseICS(text);
-    } catch (e) { console.error("Erro ao carregar:", e); }
+      const resp = await fetch(PROXY + encodeURIComponent(ICS_URL + "?t=" + Date.now()));
+      const data = await resp.text();
+      const blocos = data.split("BEGIN:VEVENT");
+      blocos.shift();
+
+      blocos.forEach(b => {
+        const title = b.match(/SUMMARY:(.*)/)?.[1]?.trim();
+        const start = b.match(/DTSTART.*:(\d{8})(T(\d{2}))?/);
+        if(title && start) {
+          const dt = start[1];
+          const hr = start[3];
+          if(hr) {
+            const slot = document.getElementById(`slot-${dt}T${hr}`);
+            if(slot) slot.innerHTML += `<div class="event-card">${title}</div>`;
+          } else {
+            const task = document.getElementById(`tasks-${dt}`);
+            if(task) task.innerHTML += `<div class="event-card" style="border-left-color: #fff;">${title}</div>`;
+          }
+        }
+      });
+    } catch(e) { console.error("Erro na sincronização"); }
   }
 
-  function parseICS(data) {
-    const events = data.split("BEGIN:VEVENT");
-    events.shift();
-    
-    events.forEach(block => {
-      const title = block.match(/SUMMARY.*:(.*)/)?.[1]?.trim();
-      const start = block.match(/DTSTART.*:(\d{8})T(\d{4})/);
-      
-      if (title && start) {
-        const dateId = start[1];
-        const hour = start[2].slice(0,2);
-        const slot = document.getElementById(`events-${dateId}T${hour}`);
-        if (slot) {
-          slot.innerHTML += `<div class="event">${title}</div>`;
-        }
-      } else if (title && block.match(/DTSTART;VALUE=DATE:(\d{8})/)) {
-        const dateId = block.match(/DTSTART;VALUE=DATE:(\d{8})/)[1];
-        const taskArea = document.getElementById(`tasks-${dateId}`);
-        if (taskArea) {
-          taskArea.innerHTML += `<div class="event" style="border-left-color: #fff;">${title}</div>`;
-        }
-      }
-    });
-  }
+  document.getElementById("btn-prev").onclick = () => { offsetSemanas--; criarLayout(); };
+  document.getElementById("btn-next").onclick = () => { offsetSemanas++; criarLayout(); };
+  document.getElementById("btn-today").onclick = () => { offsetSemanas = 0; criarLayout(); };
 
-  initGrid();
-  fetchCalendar();
-  setInterval(fetchCalendar, 600000);
+  criarLayout();
+  setInterval(carregarDados, 600000); // 10 min
 </script>
 </body>
 </html>
