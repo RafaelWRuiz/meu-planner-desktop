@@ -1,280 +1,248 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Weekly Planner Pro — Ultrawide</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root {
-      --gold: #FFD700;
-      --gold-dark: #B8860B;
-      --glass: rgba(0, 0, 0, 0.25);
-      --border: rgba(255, 255, 255, 0.1);
-    }
+<meta charset="UTF-8" />
+<title>Weekly Planner — Wallpaper 2560×1080</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --gold:#FFD700;
+    --gold-soft: rgba(255,215,0,0.65);
+    --glass-bg: rgba(0,0,0,0.20);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-inner: rgba(255,255,255,0.04);
+    --text: rgba(255,255,255,0.92);
+    --text-dim: rgba(255,255,255,0.55);
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  *{box-sizing:border-box;margin:0;padding:0;}
 
-    body {
-      background: transparent !important;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+  html, body{
+    width:100%;
+    height:100vh;
+    background-color: #000 !important; /* Fundo preto solicitado */
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    color: var(--text);
+    overflow:hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* Container posicionado à direita conforme o Lovable */
-    .app-container {
-      position: fixed;
-      right: 40px;
-      bottom: 40px;
-      width: 1080px;
-      height: 80vh;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+  /* LAYOUT ULTRAWIDE ORIGINAL DO LOVABLE */
+  .planner-app{
+    position: fixed;
+    right: 45px;
+    bottom: 45px;
+    width: 1040px;
+    height: 78vh;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    z-index: 10;
+  }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
-    }
+  .header-ui{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 8px;
+  }
 
-    .title {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
+  .brand h1{
+    font-family: "Playfair Display", serif;
+    font-size: 26px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .brand h1 span{ color: var(--gold); font-style: italic; }
 
-    .title span { color: var(--gold); font-style: italic; }
+  .nav-ui{
+    display: flex;
+    gap: 10px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: 1px solid var(--glass-border);
+  }
 
-    .nav-buttons {
-      display: flex;
-      gap: 12px;
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      padding: 8px 16px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
-    }
+  .nav-ui button{
+    background: transparent;
+    border: none;
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-    .nav-buttons button {
-      background: transparent;
-      border: none;
-      color: var(--gold);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  .planner-grid{
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 0.92fr;
+    gap: 12px;
+    min-height: 0;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr) 0.9fr;
-      gap: 15px;
-      flex: 1;
-      min-height: 0;
-    }
+  .day-col{
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(25px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.6s ease-out forwards;
+  }
 
-    .day-column {
-      background: var(--glass);
-      backdrop-filter: blur(30px);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+  .day-head{
+    padding: 16px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--glass-border);
+    background: var(--glass-inner);
+  }
 
-    .day-header {
-      padding: 20px 10px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
+  .day-name{ font-size: 9px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
+  .day-date{ font-size: 18px; color: var(--gold); font-weight: 600; margin-top: 2px; display: block; }
 
-    .day-name { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; opacity: 0.6; text-transform: uppercase; }
-    .day-date { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--gold); margin-top: 4px; }
+  .day-body{ flex: 1; overflow-y: auto; scrollbar-width: none; padding: 10px; }
+  .day-body::-webkit-scrollbar { display: none; }
 
-    .day-content {
-      flex: 1;
-      overflow-y: auto;
-      scrollbar-width: none;
-      padding: 10px;
-    }
+  .tasks-area{
+    min-height: 60px;
+    border-bottom: 1px dashed rgba(255,255,255,0.08);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-    .day-content::-webkit-scrollbar { display: none; }
+  .hour-row{ display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.03); padding: 6px 0; }
+  .hour-label{ width: 28px; font-size: 8px; font-weight: 800; color: var(--gold-soft); text-align: right; }
+  .hour-slot{ flex: 1; display: flex; flex-direction: column; gap: 4px; }
 
-    .tasks-section {
-      border-bottom: 1px dashed rgba(255,255,255,0.1);
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+  .event-card{
+    background: var(--card-bg);
+    border-left: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 10px;
+    line-height: 1.3;
+    animation: fadeIn 0.4s ease forwards;
+  }
 
-    .hour-row {
-      display: flex;
-      gap: 10px;
-      padding: 8px 0;
-      border-top: 1px solid rgba(255,255,255,0.03);
-    }
+  #sync-info{ position: fixed; bottom: 15px; right: 45px; font-size: 9px; color: var(--gold); opacity: 0.5; }
 
-    .time-label {
-      font-size: 9px;
-      color: var(--gold);
-      font-weight: 700;
-      width: 25px;
-      opacity: 0.7;
-    }
-
-    .event-container { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-
-    .event-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-left: 3px solid var(--gold);
-      border-radius: 6px;
-      padding: 8px;
-      font-size: 11px;
-      line-height: 1.4;
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    .sync-badge {
-      position: fixed;
-      bottom: 15px;
-      right: 50px;
-      font-size: 10px;
-      color: var(--gold);
-      opacity: 0.3;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+  @keyframes slideUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
+</style>
 </head>
 <body>
 
-  <div class="app-container">
-    <div class="header">
-      <h1 class="title">Weekly <span>Planner</span></h1>
-      <div class="nav-buttons">
-        <button onclick="changeWeek(-1)">Anterior</button>
-        <button onclick="resetWeek()">Hoje</button>
-        <button onclick="changeWeek(1)">Próxima</button>
-      </div>
+<div class="planner-app">
+  <div class="header-ui">
+    <div class="brand"><h1>Weekly <span>Planner</span></h1></div>
+    <div class="nav-ui">
+      <button onclick="moveWeek(-1)">←</button>
+      <button onclick="goToday()">Hoje</button>
+      <button onclick="moveWeek(1)">→</button>
     </div>
-
-    <div class="grid" id="main-grid">
-      </div>
   </div>
+  <div class="planner-grid" id="main-grid"></div>
+</div>
 
-  <div class="sync-badge">
-    <i data-lucide="refresh-cw" size="12"></i>
-    <span id="sync-time">Sincronizando...</span>
-  </div>
+<div id="sync-info">Sincronizando...</div>
 
-  <script>
-    let weekOffset = 0;
+<script>
+  // CONFIGURAÇÃO DA SUA API NA VERCEL
+  const API_ENDPOINT = "/api/calendar";
+  const WEEKDAYS = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
+  let currentOffset = 0;
 
-    function getMonday(d) {
-      d = new Date(d);
-      const day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6 : 1);
-      const monday = new Date(d.setDate(diff));
-      monday.setHours(0,0,0,0);
-      return monday;
-    }
+  function renderGrid() {
+    const grid = document.getElementById("main-grid");
+    grid.innerHTML = "";
+    
+    const today = new Date();
+    const monday = new Date(today);
+    const dayToSubtract = today.getDay() === 0 ? 6 : today.getDay() - 1;
+    monday.setDate(today.getDate() - dayToSubtract + (currentOffset * 7));
 
-    function renderLayout() {
-      const grid = document.getElementById('main-grid');
-      grid.innerHTML = '';
+    for(let i=0; i<6; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      const dateId = date.toISOString().split('T')[0].replace(/-/g, '');
       
-      const startOfWeek = getMonday(new Date());
-      startOfWeek.setDate(startOfWeek.getDate() + (weekOffset * 7));
-
-      for (let i = 0; i < 6; i++) {
-        const current = new Date(startOfWeek);
-        current.setDate(startOfWeek.getDate() + i);
-        const dateStr = current.toISOString().split('T')[0].replace(/-/g, '');
-        
-        const dayNames = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Weekend'];
-        const isWeekend = i === 5;
-
-        let hoursHtml = '';
-        for (let h = 7; h <= 21; h++) {
-          const hh = String(h).padStart(2, '0');
-          hoursHtml += `
-            <div class="hour-row">
-              <div class="time-label">${hh}:00</div>
-              <div class="event-container" id="slot-${dateStr}T${hh}"></div>
-            </div>`;
-        }
-
-        grid.innerHTML += `
-          <div class="day-column">
-            <div class="day-header">
-              <div class="day-name">${isWeekend ? 'FIM DE SEMANA' : dayNames[i]}</div>
-              <div class="day-date">${current.getDate()}/${current.getMonth() + 1}</div>
-            </div>
-            <div class="day-content">
-              <div class="tasks-section" id="tasks-${dateStr}"></div>
-              ${hoursHtml}
-            </div>
+      let hoursHtml = "";
+      for(let h=7; h<=21; h++) {
+        const hh = String(h).padStart(2, '0');
+        hoursHtml += `
+          <div class="hour-row">
+            <div class="hour-label">${hh}h</div>
+            <div class="hour-slot" id="slot-${dateId}T${hh}"></div>
           </div>`;
       }
-      lucide.createIcons();
-      fetchEvents();
+
+      const col = document.createElement("div");
+      col.className = "day-col";
+      col.style.animationDelay = (i * 0.08) + "s";
+      col.innerHTML = `
+        <div class="day-head">
+          <span class="day-name">${i < 5 ? WEEKDAYS[i] : 'WEEKEND'}</span>
+          <span class="day-date">${date.getDate()}/${date.getMonth()+1}</span>
+        </div>
+        <div class="day-body">
+          <div class="tasks-area" id="tasks-${dateId}"></div>
+          ${hoursHtml}
+        </div>
+      `;
+      grid.appendChild(col);
     }
+    fetchData();
+  }
 
-    async function fetchEvents() {
-      const timeLabel = document.getElementById('sync-time');
-      try {
-        const response = await fetch('/api/calendar?t=' + Date.now());
-        const text = await response.text();
-        
-        // Limpar eventos antigos
-        document.querySelectorAll('.event-container, .tasks-section').forEach(el => el.innerHTML = '');
+  async function fetchData() {
+    const status = document.getElementById("sync-info");
+    try {
+      const resp = await fetch(API_ENDPOINT + "?v=" + Date.now());
+      const ics = await resp.text();
+      
+      // Limpar campos
+      document.querySelectorAll('.hour-slot, .tasks-area').forEach(s => s.innerHTML = "");
 
-        const events = text.split("BEGIN:VEVENT");
-        events.shift();
+      const blocks = ics.split("BEGIN:VEVENT");
+      blocks.shift();
 
-        events.forEach(block => {
-          const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim();
-          const start = block.match(/DTSTART.*:(\d{8})(T(\d{2}))?/);
+      blocks.forEach(b => {
+        const summary = b.match(/SUMMARY:(.*)/)?.[1]?.trim();
+        const start = b.match(/DTSTART.*:(\d{8})(T(\d{2}))?/);
 
-          if (summary && start) {
-            const d = start[1];
-            const h = start[3];
-
-            if (h) {
-              const slot = document.getElementById(`slot-${d}T${h}`);
-              if (slot) slot.innerHTML += `<div class="event-card">${summary}</div>`;
-            } else {
-              const taskArea = document.getElementById(`tasks-${d}`);
-              if (taskArea) taskArea.innerHTML += `<div class="event-card" style="border-left-color: #fff; opacity: 0.8;">${summary}</div>`;
-            }
+        if (summary && start) {
+          const dId = start[1];
+          const hId = start[3];
+          if (hId) {
+            const slot = document.getElementById(`slot-${dId}T${hId}`);
+            if (slot) slot.innerHTML += `<div class="event-card">${summary}</div>`;
+          } else {
+            const task = document.getElementById(`tasks-${dId}`);
+            if (task) task.innerHTML += `<div class="event-card" style="border-left-color: #fff;">${summary}</div>`;
           }
-        });
-        timeLabel.innerText = "Atualizado: " + new Date().toLocaleTimeString().slice(0,5);
-      } catch (e) {
-        timeLabel.innerText = "Erro de conexão";
-      }
+        }
+      });
+      status.innerText = "SINCRO: " + new Date().toLocaleTimeString().slice(0,5);
+    } catch (e) {
+      status.innerText = "ERRO DE CONEXÃO";
     }
+  }
 
-    function changeWeek(n) { weekOffset += n; renderLayout(); }
-    function resetWeek() { weekOffset = 0; renderLayout(); }
+  function moveWeek(n) { currentOffset += n; renderGrid(); }
+  function goToday() { currentOffset = 0; renderGrid(); }
 
-    renderLayout();
-    setInterval(fetchEvents, 600000);
-  </script>
+  renderGrid();
+  setInterval(fetchData, 600000); // Atualiza a cada 10 min
+</script>
 </body>
 </html>
