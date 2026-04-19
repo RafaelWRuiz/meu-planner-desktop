@@ -1,97 +1,231 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Planner Desktop</title>
-    <style>
-        body {
-            margin: 0; padding: 40px; font-family: 'Segoe UI', sans-serif;
-            background: transparent; color: white; display: flex;
-            justify-content: center; gap: 15px; height: 100vh; overflow: hidden;
-        }
-        .column {
-            width: 210px; background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px); border-radius: 12px;
-            padding: 15px; border: 1px solid rgba(255,255,255,0.1);
-            height: fit-content; min-height: 450px;
-        }
-        .header { border-bottom: 2px solid #ffd700; margin-bottom: 15px; text-align: center; padding-bottom: 8px; }
-        .header h2 { margin: 0; font-size: 1rem; color: #ffd700; text-transform: uppercase; }
-        .header span { font-size: 0.8rem; opacity: 0.5; }
-        .event-box {
-            background: rgba(255,255,255,0.07); padding: 10px;
-            border-radius: 6px; margin-top: 8px; border-left: 3px solid #ffd700;
-            font-size: 0.85rem;
-        }
-        .time { color: #ffd700; font-weight: bold; font-size: 0.75rem; display: block; }
-        #status-display { position: fixed; bottom: 10px; left: 10px; font-size: 11px; color: rgba(255,255,255,0.4); }
-    </style>
+<meta charset="UTF-8" />
+<title>Weekly Planner — Wallpaper</title>
+<meta name="viewport" content="width=2560, initial-scale=1" />
+<style>
+  :root{
+    --gold:#FFD700;
+    --gold-soft: rgba(255,215,0,0.65);
+    --glass-bg: rgba(0,0,0,0.20);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-inner: rgba(255,255,255,0.04);
+    --text: rgba(255,255,255,0.92);
+    --text-dim: rgba(255,255,255,0.55);
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html, body{
+    width:100%;
+    height:100vh;
+    background: transparent; /* Alterado para transparência no Lively */
+    font-family: "Inter", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    overflow:hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .planner{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    height: 72vh;
+    width: 880px;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    padding: 0 6px;
+    opacity: 0;
+    transform: translateY(-8px);
+    animation: fadeDown 900ms ease-out 100ms forwards;
+  }
+  .header h1{
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .header h1 span{ color: var(--gold); font-style: italic; font-weight: 500; }
+  .header .meta{
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .grid{
+    flex:1;
+    display:grid;
+    grid-template-columns: repeat(5, 1fr) 0.92fr;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .day{
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    padding: 12px 10px;
+    display:flex;
+    flex-direction: column;
+    overflow:hidden;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeUp 700ms cubic-bezier(.2,.7,.2,1) forwards;
+  }
+
+  .day-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap;
+  }
+  .day-name{ font-size: 9px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--text); }
+  .day-date{ font-size: 13px; color: var(--gold); font-weight: 500; }
+
+  .day-body{ flex:1; display:flex; flex-direction:column; min-height: 0; }
+  .tasks-area{ flex: 0 0 30%; border-bottom: 1px dashed rgba(255,255,255,0.08); padding: 4px 2px; display:flex; flex-direction: column; gap: 4px; overflow-y: auto; scrollbar-width: none; }
+  .hours-area{ flex: 1; padding-top: 6px; display:flex; flex-direction: column; overflow-y: auto; scrollbar-width: none; position: relative; }
+
+  .hour-row{ display:flex; align-items:flex-start; gap: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding: 4px 0; min-height: 25px; }
+  .hour-label{ flex: 0 0 20px; font-size: 8px; font-weight: 600; color: var(--gold-soft); }
+  .hour-slot{ flex:1; display:flex; flex-direction: column; gap: 2px; }
+
+  .event{
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 10px;
+    color: var(--text);
+    border-left: 3px solid var(--gold);
+    animation: cardIn 500ms ease-out forwards;
+  }
+
+  .day.today{ border-color: rgba(255,215,0,0.4); }
+
+  @keyframes fadeUp{ to{ opacity:1; transform: translateY(0); } }
+  @keyframes fadeDown{ to{ opacity:1; transform: translateY(0); } }
+  @keyframes cardIn{ from{ opacity:0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0); } }
+</style>
 </head>
 <body>
-    <div id="status-display">Iniciando sincronização...</div>
-    <div id="planner"></div>
 
-    <script>
-        const ICS_URL = "https://outlook.live.com/owa/calendar/138c7a3c-953b-481d-ba4e-d23089a28169/1a8f188a-a392-4f70-9058-636fdf58efb3/cid-AABD2FC4AE1F391F/calendar.ics";
-        
-        // Terceira opção de Proxy (Cloudflare Worker - Mais robusto)
-        const PROXY = "https://api.allorigins.win/raw?url=";
+<div class="planner">
+  <div class="header">
+    <h1>Weekly <span>Planner</span></h1>
+    <div class="meta" id="week-meta">Carregando...</div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
 
-        async function carregarAgenda() {
-            const status = document.getElementById('status-display');
-            try {
-                // Adicionamos um timestamp para evitar cache do proxy
-                const finalUrl = PROXY + encodeURIComponent(ICS_URL + "?t=" + Date.now());
-                const response = await fetch(finalUrl);
-                
-                if (!response.ok) throw new Error("Servidor respondeu com erro");
-                
-                const data = await response.text();
-                
-                if (data.includes("BEGIN:VCALENDAR")) {
-                    render(data);
-                    status.innerText = "Sincronizado: " + new Date().toLocaleTimeString();
-                } else {
-                    status.innerText = "Dados recebidos são inválidos.";
-                }
-            } catch (e) {
-                console.error(e);
-                status.innerText = "Erro ao conectar. Tentando novamente...";
-            }
+<script>
+  const ICS_URL = "https://outlook.live.com/owa/calendar/138c7a3c-953b-481d-ba4e-d23089a28169/1a8f188a-a392-4f70-9058-636fdf58efb3/cid-AABD2FC4AE1F391F/calendar.ics";
+  const PROXY = "https://api.allorigins.win/raw?url=";
+  const DAYS_PT = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
+  const MONTHS_PT = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+
+  function getMonday(d){
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    date.setDate(date.getDate() + diff);
+    return date;
+  }
+
+  function initGrid() {
+    const today = new Date();
+    const monday = getMonday(today);
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    for(let i=0; i<5; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const dateId = d.toISOString().split('T')[0].replace(/-/g, '');
+      const isToday = d.toDateString() === today.toDateString();
+      
+      const col = document.createElement("div");
+      col.className = `day ${isToday ? 'today' : ''}`;
+      col.style.animationDelay = `${i * 100}ms`;
+
+      let hoursHtml = "";
+      for(let h = 6; h <= 22; h++) {
+        const hh = String(h).padStart(2, "0");
+        hoursHtml += `<div class="hour-row"><div class="hour-label">${hh}h</div><div class="hour-slot" id="events-${dateId}T${hh}"></div></div>`;
+      }
+
+      col.innerHTML = `
+        <div class="day-header">
+          <span class="day-name">${DAYS_PT[i]}</span>
+          <span class="day-date">${d.getDate()} ${MONTHS_PT[d.getMonth()]}</span>
+        </div>
+        <div class="day-body">
+          <div class="tasks-area" id="tasks-${dateId}"></div>
+          <div class="hours-area">${hoursHtml}</div>
+        </div>`;
+      grid.appendChild(col);
+    }
+    document.getElementById("week-meta").textContent = `Semana de ${monday.getDate()}/${monday.getMonth()+1}`;
+  }
+
+  async function fetchCalendar() {
+    try {
+      const r = await fetch(PROXY + encodeURIComponent(ICS_URL + "?t=" + Date.now()));
+      const text = await r.text();
+      parseICS(text);
+    } catch (e) { console.error("Erro ao carregar:", e); }
+  }
+
+  function parseICS(data) {
+    const events = data.split("BEGIN:VEVENT");
+    events.shift();
+    
+    events.forEach(block => {
+      const title = block.match(/SUMMARY.*:(.*)/)?.[1]?.trim();
+      const start = block.match(/DTSTART.*:(\d{8})T(\d{4})/);
+      
+      if (title && start) {
+        const dateId = start[1];
+        const hour = start[2].slice(0,2);
+        const slot = document.getElementById(`events-${dateId}T${hour}`);
+        if (slot) {
+          slot.innerHTML += `<div class="event">${title}</div>`;
         }
-
-        function render(data) {
-            const weekDates = ["20260420", "20260421", "20260422", "20260423", "20260424"];
-            const names = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
-            const container = document.getElementById('planner');
-            container.innerHTML = '';
-
-            weekDates.forEach((dt, i) => {
-                container.innerHTML += `
-                    <div class="column">
-                        <div class="header"><h2>${names[i]}</h2><span>${dt.slice(6,8)}/${dt.slice(4,6)}</span></div>
-                        <div id="events-${dt}"></div>
-                    </div>`;
-            });
-
-            const events = data.split("BEGIN:VEVENT");
-            events.forEach(ev => {
-                const title = ev.match(/SUMMARY:(.*)\r?\n/)?.[1];
-                const match = ev.match(/:(\d{8})T(\d{4})/);
-                if (title && match) {
-                    const d = match[1];
-                    const h = match[2].slice(0,2);
-                    const m = match[2].slice(2,4);
-                    const target = document.getElementById(`events-${d}`);
-                    if (target) {
-                        target.innerHTML += `<div class="event-box"><span class="time">${h}:${m}</span>${title}</div>`;
-                    }
-                }
-            });
+      } else if (title && block.match(/DTSTART;VALUE=DATE:(\d{8})/)) {
+        const dateId = block.match(/DTSTART;VALUE=DATE:(\d{8})/)[1];
+        const taskArea = document.getElementById(`tasks-${dateId}`);
+        if (taskArea) {
+          taskArea.innerHTML += `<div class="event" style="border-left-color: #fff;">${title}</div>`;
         }
+      }
+    });
+  }
 
-        carregarAgenda();
-        setInterval(carregarAgenda, 300000); // 5 min
-    </script>
+  initGrid();
+  fetchCalendar();
+  setInterval(fetchCalendar, 600000);
+</script>
 </body>
 </html>
