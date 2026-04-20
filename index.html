@@ -170,6 +170,19 @@
     }
     return "";
   }
+  
+  // Detecta categoria no formato [Categoria] no início do título
+  function extractCategoryFromTitle(title){
+    const match = title.match(/^\[([^\]]+)\]/);
+    if (match) {
+      const cat = match[1].trim().toLowerCase();
+      return {
+        category: cat,
+        cleanTitle: title.replace(/^\[([^\]]+)\]\s*/, '').trim()
+      };
+    }
+    return { category: null, cleanTitle: title };
+  }
   function isBrainDump(cats){
     if (!cats||!cats.length) return false;
     return cats.some(c=>BRAIN_DUMP_CATS.includes(c.trim().toLowerCase()));
@@ -246,7 +259,12 @@
   function injectEvent(ev, weekStart, weekEnd){
     if (!ev.start||!ev.title) return;
 
-    const catCls=getCatClass(ev.categories);
+    // Prioridade: 1) CATEGORIES do .ics, 2) [categoria] no título
+    let categories = ev.categories || [];
+    if (!categories.length && ev.titleCategory) {
+      categories = [ev.titleCategory];
+    }
+    const catCls=getCatClass(categories);
 
     // Brain Dump — qualquer semana
     if (isBrainDump(ev.categories)){
