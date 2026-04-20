@@ -297,12 +297,28 @@
     if (slot){
       const el=document.createElement("div");
       el.className="event"+(catCls?" "+catCls:"");
-      if (durH>1){
-        el.classList.add("multi-hour");
-        const ha=slot.closest(".hours-area");
-        const px=ha?getSlotPx(ha,durH):null;
-        if (px) el.style.height=px+"px";
+      
+      // Posicionamento proporcional: minutos dentro da hora
+      const minutes=ev.start.getMinutes();
+      const minuteOffset=minutes/60; // 0.0 a 0.99
+      
+      const ha=slot.closest(".hours-area");
+      if(ha){
+        const slotH=getSlotPx(ha,1); // altura de 1 slot de hora
+        if(slotH){
+          el.classList.add("multi-hour");
+          el.style.top=(minuteOffset*slotH)+"px";
+          
+          // Altura proporcional se durar mais de 1h
+          if(durH>1){
+            el.style.height=(durH*slotH)+"px";
+          } else {
+            // Evento curto: preenche da posição inicial até o fim do slot da hora
+            el.style.height=((1-minuteOffset)*slotH)+"px";
+          }
+        }
       }
+      
       el.innerHTML=`<span class="ev-time">${ev.allDay?"dia todo":time}</span><span class="ev-title">${ev.title}</span>`;
       slot.appendChild(el);
       return;
