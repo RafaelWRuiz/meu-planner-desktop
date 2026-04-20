@@ -227,7 +227,15 @@
       const [name]=head.split(";");
       if (name==="DTSTART"){ cur.start=parseIcsDate(value); cur.allDay=/^\d{8}$/.test(value); }
       else if (name==="DTEND"){ cur.end=parseIcsDate(value); }
-      else if (name==="SUMMARY"){ cur.title=unescapeIcs(value); }
+      else if (name==="SUMMARY"){ 
+        cur.title=unescapeIcs(value);
+        // Extrai categoria do título se estiver no formato [Categoria]
+        const extracted=extractCategoryFromTitle(cur.title);
+        if(extracted.category){
+          cur.titleCategory=extracted.category;
+          cur.title=extracted.cleanTitle;
+        }
+      }
       else if (name==="CATEGORIES"){ cur.categories=value.split(",").map(s=>unescapeIcs(s.trim())).filter(Boolean); }
       else if (name==="UID"){ cur.uid=value; }
     }
@@ -267,7 +275,7 @@
     const catCls=getCatClass(categories);
 
     // Brain Dump — qualquer semana
-    if (isBrainDump(ev.categories)){
+    if (isBrainDump(categories)){
       const el=document.createElement("div");
       el.className="bd-item"+(catCls?" "+catCls:"");
       el.textContent=ev.title; el.title=ev.title;
