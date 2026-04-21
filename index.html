@@ -27,7 +27,7 @@
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html,body{ width:100%; height:100vh; background:#000; font-family:"Inter","Helvetica Neue",system-ui,sans-serif; color:var(--text); overflow:hidden; -webkit-font-smoothing:antialiased; }
+  html,body{ width:100%; height:100vh; background:transparent; font-family:"Inter","Helvetica Neue",system-ui,sans-serif; color:var(--text); overflow:hidden; -webkit-font-smoothing:antialiased; }
 
   /* Wrapper: planner + brain-dump */
   .wrapper{ position:fixed; right:0; bottom:50px; height:840px; width:1220px; max-height:100vh; max-width:100vw; display:flex; gap:10px; padding:18px 26px 22px 18px; }
@@ -48,7 +48,7 @@
 
   .grid{ flex:1; display:grid; grid-template-columns:repeat(5,1fr) 0.92fr; gap:10px; min-height:0; }
 
-  .day{ position:relative; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%); box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),inset 0 0 40px rgba(255,255,255,0.015),0 18px 50px rgba(0,0,0,0.35); padding:12px 10px; display:flex; flex-direction:column; overflow:hidden; opacity:0; transform:translateY(14px); animation:fadeUp 700ms cubic-bezier(.2,.7,.2,1) forwards; }
+  .day{ position:relative; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.15); border-radius:16px; backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%); box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),inset 0 0 40px rgba(255,255,255,0.025),0 18px 50px rgba(0,0,0,0.50); padding:12px 10px; display:flex; flex-direction:column; overflow:hidden; opacity:0; transform:translateY(14px); animation:fadeUp 700ms cubic-bezier(.2,.7,.2,1) forwards; }
 
   .weekend-stack{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:6px; }
   .weekend-half{ flex:1; display:flex; flex-direction:column; min-height:0; min-width:0; overflow:hidden; }
@@ -69,6 +69,11 @@
   .hour-row:first-child{ border-top:none; }
   .hour-label{ flex:0 0 24px; font-size:8.5px; font-weight:600; letter-spacing:0.06em; color:var(--gold-soft); font-variant-numeric:tabular-nums; line-height:1; padding-top:1px; }
   .hour-slot{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; position:relative; }
+  
+  /* Toggle de horas: esconde labels quando .hide-hours está ativo */
+  .planner.hide-hours .hour-label{ display:none; }
+  .planner.hide-hours .hour-slot{ margin-left:0; }
+  .planner.hide-hours .hour-row{ gap:2px; }
 
   /* Task chip */
   .task{ background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:5px 9px 5px 11px; font-size:10px; line-height:1.3; color:var(--text); backdrop-filter:blur(6px); position:relative; opacity:0; transform:translateY(6px); animation:cardIn 500ms ease-out forwards; flex-shrink:0; }
@@ -77,15 +82,20 @@
   /* Event card com glow de luxo */
   .event{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-left:2px solid var(--cat-color,var(--gold)); border-radius:6px; padding:3px 7px; font-size:10px; line-height:1.25; color:var(--text); backdrop-filter:blur(6px); opacity:0; transform:translateY(4px); animation:cardIn 500ms ease-out forwards; box-shadow:0 0 12px rgba(0,0,0,0.4),inset 0 0 0 0.5px rgba(255,255,255,0.06),0 0 15px var(--cat-glow,rgba(255,215,0,0.25)); overflow:hidden; flex-shrink:0; }
   .event.multi-hour{ position:absolute; left:0; right:0; z-index:2; }
-  .event .ev-time{ font-size:8px; font-weight:600; letter-spacing:0.08em; color:var(--cat-color,var(--gold-soft)); margin-bottom:1px; display:block; }
+  .event .ev-time{ font-size:8px; font-weight:600; letter-spacing:0.08em; color:var(--cat-color,var(--gold-soft)); display:flex; flex-direction:column; gap:1px; margin-bottom:2px; }
+  .event .ev-time .time-start{ line-height:1; }
+  .event .ev-time .time-end{ line-height:1; font-size:7px; opacity:0.7; }
   .event .ev-title{ font-size:10px; color:var(--text); font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
+  /* Evento vazio (sem título): só barra colorida fina */
+  .event.empty-event{ padding:2px 4px; min-height:18px; }
+  .event.empty-event .ev-time{ margin-bottom:0; font-size:7px; }
 
   .day.today{ border-color:rgba(255,215,0,0.25); box-shadow:inset 0 1px 0 rgba(255,215,0,0.12),inset 0 0 60px rgba(255,215,0,0.04),0 20px 60px rgba(0,0,0,0.4); }
   .day.today .day-name{ color:var(--gold); }
 
   /* Brain Dump */
-  .brain-dump{ width:172px; flex-shrink:0; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px; backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%); box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),0 18px 50px rgba(0,0,0,0.35); padding:14px 12px; display:flex; flex-direction:column; gap:8px; overflow:hidden; opacity:0; transform:translateY(14px); animation:fadeUp 700ms cubic-bezier(.2,.7,.2,1) 750ms forwards; }
-  .brain-dump-header{ display:flex; align-items:center; gap:7px; padding-bottom:8px; border-bottom:1px solid var(--glass-border); flex-shrink:0; }
+  .brain-dump{ width:172px; flex-shrink:0; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.15); border-radius:16px; backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%); box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),inset 0 0 40px rgba(255,255,255,0.025),0 18px 50px rgba(0,0,0,0.50); padding:14px 12px; display:flex; flex-direction:column; gap:8px; overflow:hidden; opacity:0; transform:translateY(14px); animation:fadeUp 700ms cubic-bezier(.2,.7,.2,1) 750ms forwards; }
+  .brain-dump-header{ display:flex; align-items:center; gap:7px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.15); flex-shrink:0; }
   .bd-icon{ font-size:14px; line-height:1; }
   .bd-title{ font-size:9px; font-weight:600; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); }
   .brain-dump-list{ flex:1; overflow:hidden; display:flex; flex-direction:column; gap:5px; }
@@ -119,6 +129,7 @@
         <button class="nav-btn" id="prev-week">◀</button>
         <button class="nav-btn today-btn" id="today-btn">Hoje</button>
         <button class="nav-btn" id="next-week">▶</button>
+        <button class="nav-btn today-btn" id="toggle-hours-btn" title="Mostrar/Esconder horas">🕐</button>
         <button class="nav-btn today-btn" id="refresh-btn">↻ <span id="sync-label">SYNC</span></button>
         <div class="meta" id="week-meta">Semana</div>
       </div>
@@ -195,12 +206,18 @@
   function fmtTime(d){ return d.toTimeString().slice(0,5); }
 
   const TODAY = (()=>{ const t=new Date(); t.setHours(0,0,0,0); return t; })();
+  const planner=document.querySelector(".planner");
   const grid=document.getElementById("grid");
   const weekMetaEl=document.getElementById("week-meta");
   const syncLabel=document.getElementById("sync-label");
   const refreshBtn=document.getElementById("refresh-btn");
+  const toggleHoursBtn=document.getElementById("toggle-hours-btn");
   const bdList=document.getElementById("brain-dump-list");
   let weekOffset=0, icsCachePromise=null, lastSyncAt=0;
+  
+  // Estado do toggle de horas (padrão: escondido)
+  let hoursVisible=false;
+  planner.classList.add("hide-hours");
 
   /* ── Parser ICS ── */
   function unfoldIcs(t){ return t.replace(/\r?\n[ \t]/g,""); }
@@ -319,7 +336,22 @@
         }
       }
       
-      el.innerHTML=`<span class="ev-time">${ev.allDay?"dia todo":time}</span><span class="ev-title">${ev.title}</span>`;
+      // Monta HTML do evento
+      const isEmpty=!ev.title||ev.title.trim()==="";
+      if(isEmpty) el.classList.add("empty-event");
+      
+      let timeHtml="";
+      if(ev.allDay){
+        timeHtml=`<span class="ev-time"><span class="time-start">dia todo</span></span>`;
+      } else {
+        const endTime=ev.end ? `${pad2(ev.end.getHours())}:${pad2(ev.end.getMinutes())}` : "";
+        timeHtml=`<span class="ev-time"><span class="time-start">${time}</span>${endTime?`<span class="time-end">${endTime}</span>`:""}</span>`;
+      }
+      
+      el.innerHTML=isEmpty 
+        ? timeHtml
+        : `${timeHtml}<span class="ev-title">${ev.title}</span>`;
+      
       slot.appendChild(el);
       return;
     }
@@ -389,13 +421,10 @@
       </div>`;
     };
     wkCol.innerHTML=`
-      <div class="day-header" style="white-space:normal;flex-wrap:wrap;gap:4px 8px;">
-        <span class="day-name" style="font-size:8px;letter-spacing:0.20em;">FIM DE SEMANA</span>
-        <span class="day-date">${pad2(saturday.getDate())}<span class="month">${MONTHS_PT[saturday.getMonth()]}</span></span>
+      <div class="day-header" style="visibility:hidden;height:0;padding:0;margin:0;border:none;">
       </div>
       <div class="day-body">
-        <div class="tasks-area" id="tasks-${wkId}-notes"></div>
-        <div class="weekend-stack">${wkHalf(saturday,"SÁBADO")}${wkHalf(sunday,"DOMINGO")}</div>
+        <div class="weekend-stack" style="padding-top:0;">${wkHalf(saturday,"SÁBADO")}${wkHalf(sunday,"DOMINGO")}</div>
       </div>`;
     grid.appendChild(wkCol);
 
@@ -439,6 +468,17 @@
   document.getElementById("next-week").addEventListener("click",()=>renderWeek(weekOffset+1));
   document.getElementById("today-btn").addEventListener("click",()=>renderWeek(0));
   refreshBtn.addEventListener("click",()=>syncNow("manual"));
+  
+  // Toggle mostrar/esconder horas
+  toggleHoursBtn.addEventListener("click",()=>{
+    hoursVisible=!hoursVisible;
+    if(hoursVisible){
+      planner.classList.remove("hide-hours");
+    } else {
+      planner.classList.add("hide-hours");
+    }
+  });
+  
   document.addEventListener("keydown",e=>{
     if(e.key==="ArrowLeft")  renderWeek(weekOffset-1);
     if(e.key==="ArrowRight") renderWeek(weekOffset+1);
