@@ -62,7 +62,21 @@
   .day-date .month{ font-family:"Inter",sans-serif; font-size:9px; letter-spacing:0.25em; color:var(--gold-soft); margin-left:3px; text-transform:uppercase; }
 
   .day-body{ flex:1; display:flex; flex-direction:column; min-height:0; }
-  .tasks-area{ flex:0 0 auto; max-height:28%; border-bottom:1px dashed rgba(255,255,255,0.08); padding:4px 2px 8px; display:flex; flex-direction:column; gap:4px; overflow:hidden; }
+  .tasks-area{ 
+    flex:0 0 auto; 
+    min-height:80px;
+    max-height:35%; 
+    border-bottom:1px solid rgba(255,255,255,0.12); 
+    padding:6px 4px 8px; 
+    display:flex; 
+    flex-direction:column; 
+    gap:3px; 
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .tasks-area::-webkit-scrollbar{ width:3px; }
+  .tasks-area::-webkit-scrollbar-track{ background:transparent; }
+  .tasks-area::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.15); border-radius:2px; }
 
   .hours-area{ flex:1; padding-top:6px; display:flex; flex-direction:column; overflow:hidden; position:relative; }
   .hour-row{ flex:1; display:flex; align-items:flex-start; gap:6px; border-top:1px solid rgba(255,255,255,0.05); padding:2px 0 0; min-height:0; position:relative; }
@@ -88,7 +102,7 @@
   .event.multi-hour{ position:absolute; left:0; right:0; z-index:2; }
   .event .ev-time{ font-size:8px; font-weight:600; letter-spacing:0.04em; color:var(--cat-color,var(--gold-soft)); text-align:left; }
   .event .ev-time .time-start{ line-height:1; display:block; }
-  .event .ev-time .time-end{ line-height:1; font-size:7px; opacity:0.7; position:absolute; bottom:3px; left:6px; }
+  .event .ev-time .time-end{ line-height:1; font-size:8px; opacity:0.8; position:absolute; bottom:3px; left:6px; }
   .event .ev-title{ font-size:10px; color:var(--text); font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:2px; line-height:1.3; max-width:100%; }
   /* Card pequeno (<50min): título na mesma linha do horário, sem horário de fim */
   .event.short-event{ flex-direction:row; gap:5px; align-items:center; padding:5px 7px; min-height:36px !important; height:36px !important; }
@@ -315,6 +329,20 @@
     if (ev.start<weekStart||ev.start>=weekEnd) return;
 
     const dateId=fmtId(ev.start);
+    
+    // Eventos "dia inteiro" (all-day) vão para a área de tarefas no topo
+    if(ev.allDay){
+      const tasksArea=document.getElementById(`tasks-${dateId}`);
+      if(tasksArea){
+        const el=document.createElement("div");
+        el.className="task"+(catCls?" "+catCls:"");
+        el.innerHTML=ev.title;
+        el.title=ev.title;
+        tasksArea.appendChild(el);
+      }
+      return;
+    }
+    
     const hh=pad2(ev.start.getHours());
     const time=`${hh}:${pad2(ev.start.getMinutes())}`;
 
