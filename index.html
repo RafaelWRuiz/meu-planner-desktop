@@ -341,9 +341,9 @@
           el.classList.add("multi-hour");
           el.style.top=(minuteOffset*slotH)+"px";
           
-          // Eventos curtos: altura automática (definida pelo conteúdo)
+          // Eventos curtos: altura fixa de 32px para garantir legibilidade
           if(isShortEvent){
-            el.style.height="auto";
+            el.style.height="32px";
           }
           // Altura proporcional se durar mais de 1h
           else if(durH>1){
