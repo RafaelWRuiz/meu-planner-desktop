@@ -139,18 +139,13 @@
   .event .ev-title[title]{ cursor:help; }
   .event .ev-title.long-title{ font-size:9px; }
   
-  /* Efeito [imp] - marca-texto laranja vivo */
-  .event.important-marker{ 
-    background:linear-gradient(135deg, rgba(255,111,0,0.15) 0%, rgba(255,111,0,0.08) 100%);
-    border-left-color:#FF6F00;
-    box-shadow:
-      0 0 20px rgba(255,111,0,0.35),
-      inset 0 0 0 0.5px rgba(255,111,0,0.12),
-      0 0 15px rgba(255,111,0,0.4);
-  }
+  /* Efeito [imp] - marca-texto laranja só no título */
   .event.important-marker .ev-title,
-  .event.important-marker .ev-time{
-    text-shadow:0 0 8px rgba(255,111,0,0.3);
+  .task.important-marker{
+    background:linear-gradient(120deg, rgba(255,111,0,0.35) 0%, rgba(255,111,0,0.25) 100%);
+    padding:1px 4px;
+    border-radius:3px;
+    box-shadow:0 0 8px rgba(255,111,0,0.2);
   }
 
   .day.today{ border-color:rgba(255,215,0,0.25); box-shadow:inset 0 1px 0 rgba(255,215,0,0.12),inset 0 0 60px rgba(255,215,0,0.04),0 20px 60px rgba(0,0,0,0.4); }
@@ -389,7 +384,7 @@
       const tasksArea=document.getElementById(`tasks-${dateId}`);
       if(tasksArea){
         const el=document.createElement("div");
-        el.className="task"+(catCls?" "+catCls:"");
+        el.className="task"+(catCls?" "+catCls:"")+(ev.isImportant?" important-marker":"");
         el.innerHTML=ev.title;
         el.title=ev.title;
         tasksArea.appendChild(el);
