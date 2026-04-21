@@ -56,16 +56,14 @@
   .weekend-half .mini-header{ display:flex; align-items:baseline; justify-content:center; gap:8px; padding-bottom:6px; margin-bottom:6px; border-bottom:1px solid var(--glass-border); white-space:nowrap; }
   .weekend-half .free-area{ flex:1; display:flex; flex-direction:column; gap:5px; overflow:hidden; padding:0 2px; }
 
-  .day-header{ display:flex; align-items:baseline; justify-content:center; gap:8px; padding-bottom:8px; margin-bottom:8px; border-bottom:1px solid var(--glass-border); white-space:nowrap; }
   .day-name{ font-size:10px; font-weight:600; letter-spacing:0.28em; text-transform:uppercase; }
   .day-date{ font-family:"Playfair Display",Georgia,serif; font-size:15px; color:var(--gold); font-weight:500; letter-spacing:0.05em; }
   .day-date .month{ font-family:"Inter",sans-serif; font-size:9px; letter-spacing:0.25em; color:var(--gold-soft); margin-left:3px; text-transform:uppercase; }
 
   .day-body{ flex:1; display:flex; flex-direction:column; min-height:0; }
   .tasks-area{ 
-    flex:0 0 40%;
-    border-bottom:1px solid rgba(255,255,255,0.12); 
-    padding:8px 6px; 
+    flex:0 0 17.5%;
+    padding:6px 6px 4px; 
     display:flex; 
     flex-direction:column; 
     gap:4px; 
@@ -75,6 +73,19 @@
   .tasks-area::-webkit-scrollbar{ width:3px; }
   .tasks-area::-webkit-scrollbar-track{ background:transparent; }
   .tasks-area::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.15); border-radius:2px; }
+  
+  /* Header do dia agora fica NO MEIO dos 35% */
+  .day-header{ 
+    flex:0 0 auto;
+    display:flex; 
+    align-items:baseline; 
+    justify-content:center; 
+    gap:8px;
+    padding:6px 0;
+    border-top:1px solid rgba(255,255,255,0.08);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    white-space:nowrap;
+  }
 
   .hours-area{ flex:1; padding-top:6px; display:flex; flex-direction:column; overflow:hidden; position:relative; }
   .hour-row{ flex:1; display:flex; align-items:flex-start; gap:6px; border-top:1px solid rgba(255,255,255,0.05); padding:2px 0 0; min-height:0; position:relative; }
@@ -471,12 +482,13 @@
         hoursHtml+=`<div class="hour-row"><div class="hour-label">${hh}</div><div class="hour-slot" id="events-${dateId}T${hh}"></div></div>`;
       }
       col.innerHTML=`
-        <div class="day-header">
-          <span class="day-name">${DAYS_PT[idx]}</span>
-          <span class="day-date">${pad2(d.getDate())}<span class="month">${MONTHS_PT[d.getMonth()]}</span></span>
-        </div>
         <div class="day-body">
           <div class="tasks-area" id="tasks-${dateId}"></div>
+          <div class="day-header">
+            <span class="day-name">${DAYS_PT[idx]}</span>
+            <span class="day-date">${pad2(d.getDate())}<span class="month">${MONTHS_PT[d.getMonth()]}</span></span>
+          </div>
+          <div class="tasks-area" id="commits-${dateId}"></div>
           <div class="hours-area">${hoursHtml}</div>
         </div>`;
       grid.appendChild(col);
