@@ -63,14 +63,12 @@
 
   .day-body{ flex:1; display:flex; flex-direction:column; min-height:0; }
   .tasks-area{ 
-    flex:0 0 auto; 
-    min-height:80px;
-    max-height:35%; 
+    flex:0 0 40%;
     border-bottom:1px solid rgba(255,255,255,0.12); 
-    padding:6px 4px 8px; 
+    padding:8px 6px; 
     display:flex; 
     flex-direction:column; 
-    gap:3px; 
+    gap:4px; 
     overflow-y:auto;
     overflow-x:hidden;
   }
@@ -94,15 +92,29 @@
   .planner:not(.hide-hours) .event .ev-time{ display:none; }
 
   /* Task chip */
-  .task{ background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:5px 9px 5px 11px; font-size:10px; line-height:1.3; color:var(--text); backdrop-filter:blur(6px); position:relative; opacity:0; transform:translateY(6px); animation:cardIn 500ms ease-out forwards; flex-shrink:0; }
-  .task::before{ content:""; position:absolute; left:0; top:5px; bottom:5px; width:2px; border-radius:2px; background:var(--cat-color,var(--gold)); opacity:.9; box-shadow:0 0 6px var(--cat-color,rgba(255,215,0,0.4)); }
+  .task{ 
+    font-size:10px; 
+    line-height:1.4;
+    color:var(--text);
+    padding-left:0;
+    position:relative;
+    display:flex;
+    gap:6px;
+    align-items:baseline;
+  }
+  .task::before{ 
+    content:"−"; 
+    color:var(--cat-color,var(--gold)); 
+    font-weight:600;
+    flex-shrink:0;
+  }
 
   /* Event card com glow de luxo */
   .event{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-left:2px solid var(--cat-color,var(--gold)); border-radius:6px; padding:3px 7px 3px 6px; font-size:10px; line-height:1.25; color:var(--text); backdrop-filter:blur(6px); opacity:0; transform:translateY(4px); animation:cardIn 500ms ease-out forwards; box-shadow:0 0 12px rgba(0,0,0,0.4),inset 0 0 0 0.5px rgba(255,255,255,0.06),0 0 15px var(--cat-glow,rgba(255,215,0,0.25)); overflow:hidden; flex-shrink:0; position:relative; display:flex; flex-direction:column; }
   .event.multi-hour{ position:absolute; left:0; right:0; z-index:2; }
   .event .ev-time{ font-size:8px; font-weight:600; letter-spacing:0.04em; color:var(--cat-color,var(--gold-soft)); text-align:left; }
   .event .ev-time .time-start{ line-height:1; display:block; }
-  .event .ev-time .time-end{ line-height:1; font-size:8px; opacity:0.8; position:absolute; bottom:3px; left:6px; }
+  .event .ev-time .time-end{ line-height:1; font-size:8px; opacity:1; position:absolute; bottom:3px; left:6px; font-weight:600; }
   .event .ev-title{ font-size:10px; color:var(--text); font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:2px; line-height:1.3; max-width:100%; }
   /* Card pequeno (<50min): título na mesma linha do horário, sem horário de fim */
   .event.short-event{ flex-direction:row; gap:5px; align-items:center; padding:5px 7px; min-height:36px !important; height:36px !important; }
